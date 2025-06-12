@@ -47,7 +47,8 @@ if _use_aiter:
 if _is_cuda:
     from sgl_kernel import fp8_blockwise_scaled_mm, fp8_scaled_mm
 
-use_vllm_cutlass_w8a8_fp8_kernel = get_bool_env_var("USE_VLLM_CUTLASS_W8A8_FP8_KERNEL")
+use_vllm_cutlass_w8a8_fp8_kernel = get_bool_env_var(
+    "USE_VLLM_CUTLASS_W8A8_FP8_KERNEL")
 
 # Input scaling factors are no longer optional in _scaled_mm starting
 # from pytorch 2.5. Allocating a dummy tensor to pass as input_scale
@@ -337,8 +338,8 @@ def block_quant_to_tensor_quant(
     x_dq_block_tiles = [
         [
             x_dq_block[
-                j * block_n : min((j + 1) * block_n, n),
-                i * block_k : min((i + 1) * block_k, k),
+                j * block_n: min((j + 1) * block_n, n),
+                i * block_k: min((i + 1) * block_k, k),
             ]
             for i in range(k_tiles)
         ]
@@ -380,14 +381,15 @@ def block_quant_dequant(
     for j in range(n_tiles):
         for i in range(k_tiles):
             x_q_block_tile = x_q_block[
-                j * block_n : min((j + 1) * block_n, n),
-                i * block_k : min((i + 1) * block_k, k),
+                j * block_n: min((j + 1) * block_n, n),
+                i * block_k: min((i + 1) * block_k, k),
             ]
             x_dq_block_tile = x_dq_block[
-                j * block_n : min((j + 1) * block_n, n),
-                i * block_k : min((i + 1) * block_k, k),
+                j * block_n: min((j + 1) * block_n, n),
+                i * block_k: min((i + 1) * block_k, k),
             ]
-            x_dq_block_tile[:, :] = x_q_block_tile.to(torch.float32) * x_s[j][i]
+            x_dq_block_tile[:, :] = x_q_block_tile.to(
+                torch.float32) * x_s[j][i]
 
     return x_dq_block
 
@@ -423,7 +425,8 @@ def _apply_fallback_scaled_mm(
 ):
     global TORCH_DEVICE_IDENTITY
     if TORCH_DEVICE_IDENTITY is None:
-        TORCH_DEVICE_IDENTITY = torch.ones(1, dtype=torch.float32, device=weight.device)
+        TORCH_DEVICE_IDENTITY = torch.ones(
+            1, dtype=torch.float32, device=weight.device)
 
     output = torch._scaled_mm(
         qinput,
