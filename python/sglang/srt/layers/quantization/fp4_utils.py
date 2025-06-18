@@ -1,7 +1,7 @@
 import torch
 
 from typing import Callable, List, Optional
-from sglang.srt.layers.quantization.fp8_kernel import (
+from sglang.srt.layers.quantization.fp4_kernel import (
     per_token_group_quant_fp4,
 )
 
