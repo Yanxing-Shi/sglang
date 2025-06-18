@@ -2,7 +2,7 @@ import torch
 
 from typing import Callable, List, Optional
 from sglang.srt.layers.quantization.fp4_kernel import (
-    per_token_group_quant_fp4,
+    per_1x32_quant_fp4,
 )
 
 from sglang.srt.utils import (
@@ -213,7 +213,6 @@ def dispatch_w4a4_block_fp4_linear() -> Callable:
 def aiter_w4a4_block_fp4_linear(
     input: torch.Tensor,
     weight: torch.Tensor,
-    block_size: List[int],
     weight_scale: torch.Tensor,
     input_scale: Optional[torch.Tensor] = None,
     bias: Optional[torch.Tensor] = None,
@@ -222,8 +221,8 @@ def aiter_w4a4_block_fp4_linear(
     input_2d = input.view(-1, input.shape[-1])
     output_shape = [*input.shape[:-1], weight.shape[0]]
 
-    q_input, x_scale = per_token_group_quant_fp4(
-        input_2d, block_size[1], column_major_scales=False
+    q_input, x_scale = per_1x32_quant_fp4(
+        input_2d
     )
     output = gemm_a4w4_blockscale_CK(
         q_input, weight, x_scale, weight_scale, dtype=input.dtype
