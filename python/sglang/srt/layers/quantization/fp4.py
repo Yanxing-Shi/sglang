@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 
 
 class Fp4Config(QuantizationConfig):
-    """Config class for FP4."""
+    """Config class for MXFP4."""
 
     def __init__(
         self,
@@ -126,18 +126,13 @@ class Fp4Config(QuantizationConfig):
 
 
 class Fp4LinearMethod(LinearMethodBase):
-    """Linear method for FP4.
-    Supports loading FP4 checkpoints with static weight scale and
+    """Linear method for MXFP4.
+    Supports loading MXFP4 checkpoints with static weight scale and
     dynamic/static activation scale.
 
     Also supports loading quantized FP16/BF16 model checkpoints with dynamic
     activation scaling. The weight scaling factor will be initialized after
     the model weights are loaded.
-
-    Limitations:
-    1. Only support per-tensor quantization due to torch._scaled_mm support.
-    2. Only support float8_e4m3fn data type due to the limitation of
-       torch._scaled_mm (https://github.com/pytorch/pytorch/blob/2e48b39603411a41c5025efbe52f89560b827825/aten/src/ATen/native/cuda/Blas.cpp#L854-L856)
 
     Args:
         quant_config: The quantization config.
@@ -308,12 +303,11 @@ class Fp4LinearMethod(LinearMethodBase):
         bias: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
 
-        if self.block_quant:
-            return self.w8a8_block_fp8_linear(
-                input=x,
-                weight=layer.weight,
-                block_size=self.quant_config.weight_block_size,
-                weight_scale=layer.weight_scale_inv,
-                input_scale=None,
-                bias=bias,
-            )
+        return self.w4a4_block_fp4_linear(
+            input=x,
+            weight=layer.weight,
+            block_size=self.quant_config.weight_block_size,
+            weight_scale=layer.weight_scale_inv,
+            input_scale=None,
+            bias=bias,
+        )
