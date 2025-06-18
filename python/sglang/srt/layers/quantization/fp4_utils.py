@@ -80,7 +80,7 @@ F32_EXP_BIAS = _n_ones(EBITS_F32 - 1)
 
 # copy-pasted from
 # https://github.com/pytorch/ao/blob/bc4f51da86956275da7db0da6e420c506df97820/torchao/prototype/custom_fp_utils.py#L27C1-L142C29
-def _fp32_to_floatx_unpacked(x: Tensor, ebits: int, mbits: int) -> Tensor:
+def _fp32_to_floatx_unpacked(x: torch.Tensor, ebits: int, mbits: int) -> torch.Tensor:
     """Convert FP32 numbers to sub-byte floating point numbers with the given
     number of exponent and mantissa bits.
 
