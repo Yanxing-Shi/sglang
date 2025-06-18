@@ -38,7 +38,7 @@ class TestMXFP4Base(CustomTestCase):
         return A, quant_A, scale
 
 
-class TestPerTokenGroupQuantFP4(TestFP4Base):
+class TestPerTokenGroupQuantFP4(TestMXFP4Base):
     def test_per_token_group_quant_fp4(self):
         if torch.cuda.get_device_capability()[0] < 10:
             return
